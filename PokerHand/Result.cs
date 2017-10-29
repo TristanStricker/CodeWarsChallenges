@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace PokerHand
 {
-    public class Class1
+    public enum Result
     {
+        Win,
+        Loss,
+        Tie
     }
 }
