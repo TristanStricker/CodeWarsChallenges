@@ -107,10 +107,10 @@ namespace PokerHand
         private HandClassification Classify(List<Card> hand)
         {
             var suitGroups = hand
-                .GroupBy(card => card.Suit);
+                .GroupBy(card => card.Suit).ToList();
 
             var rankGroups = hand
-                .GroupBy(card => card.Rank);
+                .GroupBy(card => card.Rank).ToList();
 
             // Pinched from StackOverflow!
             var isHandInMonotonicDecreasingRankOrder = 
@@ -122,32 +122,34 @@ namespace PokerHand
 
             if (firstCard.Rank == Rank.Ace &&
                 isHandInMonotonicDecreasingRankOrder && 
-                suitGroups.Count() == 1)
+                suitGroups.Count == 1)
             {
                 return HandClassification.RoyalFlush;
             }
 
             if (isHandInMonotonicDecreasingRankOrder &&
-                suitGroups.Count() == 1)
+                suitGroups.Count == 1)
             {
                 return HandClassification.StraightFlush;
             }
 
             if (rankGroups.Any(group => group.Count() == 4))
+            {
                 return HandClassification.FourOfAKind;
+            }
 
-            if (rankGroups.Count() == 2)
+            if (rankGroups.Count == 2)
             {
                 return HandClassification.FullHouse;
             }
 
-            if (suitGroups.Count() == 1 &&
+            if (suitGroups.Count == 1 &&
                 isHandInMonotonicDecreasingRankOrder == false)
             { 
                 return HandClassification.Flush;
             }
 
-            if (suitGroups.Count() != 1 
+            if (suitGroups.Count != 1 
                 && isHandInMonotonicDecreasingRankOrder == true)
             {
                 return HandClassification.Straight;
@@ -158,13 +160,13 @@ namespace PokerHand
                 return HandClassification.ThreeOfAKind;
             }
 
-            if (rankGroups.Count() == 3 &&
+            if (rankGroups.Count == 3 &&
                 rankGroups.Any(group => group.Count() == 2))
             {
                 return HandClassification.TwoPair;
             }
 
-            if (rankGroups.Count() == 4)
+            if (rankGroups.Count == 4)
             {
                 return HandClassification.Pair;
             }
@@ -212,13 +214,10 @@ namespace PokerHand
             }
 
             if (compared < 0)
-                return Result.Loss;
-            if (compared == 0)
             {
-                return Result.Tie;
+                return Result.Loss;
             }
-
-            return Result.Win;
+            return compared == 0 ? Result.Tie : Result.Win;
         }
     }
 }

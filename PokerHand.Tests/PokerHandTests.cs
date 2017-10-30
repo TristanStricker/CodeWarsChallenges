@@ -21,6 +21,8 @@ namespace PokerHand.Tests
         [TestCase("Highest card loses", Result.Loss, "2S 3H 6H 7S 9C", "7H 3C TH 6H 9S")]
         [TestCase("Highest card wins", Result.Win, "4S 5H 6H TS AC", "3S 5H 6H TS AC")]
         [TestCase("Equal cards is tie", Result.Tie, "2S AH 4H 5S 6C", "AD 4C 5H 6H 2C")]
+        [TestCase("Highest pair wins", Result.Win, "8C 4S KH JS 4D", "KC 4H KS 2H 8D")]
+        [TestCase("Random Test", Result.Loss, "JH 8S TH AH QH", "TS KS 5S 9S AC")]
         public void PokerHandTest(string description, Result expected, string hand, string opponentHand)
         {
             Assert.AreEqual(expected, new PokerHand(hand).CompareWith(new PokerHand(opponentHand)), description);
