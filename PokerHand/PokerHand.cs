@@ -86,6 +86,8 @@ namespace PokerHand
         private List<Card> Hand { get; } = new List<Card>(5);
 
         private HandClassification Classification { get; }
+        private List<IGrouping<Suit, Card>> SuitGroups { get; set; }
+        private List<IGrouping<Rank, Card>> RankGroups { get; set; }
 
         public PokerHand(string dealtCards)
         {
@@ -102,14 +104,14 @@ namespace PokerHand
                 .ToList();
 
             Classification = Classify(Hand);
-        }
+        } 
 
         private HandClassification Classify(List<Card> hand)
         {
-            var suitGroups = hand
+            SuitGroups = hand
                 .GroupBy(card => card.Suit).ToList();
 
-            var rankGroups = hand
+            RankGroups = hand
                 .GroupBy(card => card.Rank).ToList();
 
             // Pinched from StackOverflow!
@@ -121,52 +123,52 @@ namespace PokerHand
             var firstCard = hand.First();
 
             if (firstCard.Rank == Rank.Ace &&
-                isHandInMonotonicDecreasingRankOrder && 
-                suitGroups.Count == 1)
+                isHandInMonotonicDecreasingRankOrder &&
+                SuitGroups.Count == 1)
             {
                 return HandClassification.RoyalFlush;
             }
 
             if (isHandInMonotonicDecreasingRankOrder &&
-                suitGroups.Count == 1)
+                SuitGroups.Count == 1)
             {
                 return HandClassification.StraightFlush;
             }
 
-            if (rankGroups.Any(group => group.Count() == 4))
+            if (RankGroups.Any(group => group.Count() == 4))
             {
                 return HandClassification.FourOfAKind;
             }
 
-            if (rankGroups.Count == 2)
+            if (RankGroups.Count == 2)
             {
                 return HandClassification.FullHouse;
             }
 
-            if (suitGroups.Count == 1 &&
+            if (SuitGroups.Count == 1 &&
                 isHandInMonotonicDecreasingRankOrder == false)
             { 
                 return HandClassification.Flush;
             }
 
-            if (suitGroups.Count != 1 
+            if (SuitGroups.Count != 1 
                 && isHandInMonotonicDecreasingRankOrder == true)
             {
                 return HandClassification.Straight;
             }
 
-            if (rankGroups.Any(group => group.Count() == 3))
+            if (RankGroups.Any(group => group.Count() == 3))
             {
                 return HandClassification.ThreeOfAKind;
             }
 
-            if (rankGroups.Count == 3 &&
-                rankGroups.Any(group => group.Count() == 2))
+            if (RankGroups.Count == 3 &&
+                RankGroups.Any(group => group.Count() == 2))
             {
                 return HandClassification.TwoPair;
             }
 
-            if (rankGroups.Count == 4)
+            if (RankGroups.Count == 4)
             {
                 return HandClassification.Pair;
             }
@@ -178,7 +180,7 @@ namespace PokerHand
         {
             if(card.Length != 2)
             {
-                throw new ArgumentException($"Card {index + 1} does not meet format RS, whare (R)ank, (S)uit");
+                throw new ArgumentException($"Card {card} at position {index + 1}, does not meet format RS, whare (R)ank, (S)uit");
             }
 
             if (!RankLookup.TryGetValue(card[0], out Rank rank))
@@ -196,28 +198,118 @@ namespace PokerHand
 
         public Result CompareWith(PokerHand other)
         {
-            int compared;
-
-            Debug.WriteLine($"This classification {this.Classification}");
-            Debug.WriteLine($"Other classification {other.Classification}");
-
+            //int compared;
+         
             if (this.Classification == other.Classification)
             {
-                var thisSum = this.Hand.Sum(card => (int)card.Rank);
-                var otherSum = other.Hand.Sum(card => (int)card.Rank);
+                var skip = 0;
+                var take = 0;
+                
+                switch (Classification)
+                {
+                    case HandClassification.HighHand:
+                    {
+                        var thisSideCards = this.Hand.Select(x => x.Rank).ToList();
+                        var otherSideCards = other.Hand.Select(x => x.Rank).ToList();
 
-                compared = thisSum.CompareTo(otherSum);
+                        return CompareSideCards(thisSideCards, otherSideCards);
+                    }
+                    case HandClassification.Pair:
+                    {
+                        var thisPairRank = this.RankGroups[0].Key;
+                        var otherPairRank = other.RankGroups[0].Key;
+                        if (thisPairRank != otherPairRank)
+                        {
+                            return Decide(thisPairRank.CompareTo(otherPairRank));
+                        }
+
+                        var thisSideCards = this.Hand.Skip(2).Select(x => x.Rank).ToList();
+                        var otherSideCards = other.Hand.Skip(2).Select(x => x.Rank).ToList();
+                        return CompareSideCards(thisSideCards, otherSideCards);
+                    }
+                    case HandClassification.TwoPair:
+                    {
+                        take = 1;
+                        // First pair are same rank
+                        if (this.RankGroups[0].Key == other.RankGroups[0].Key)
+                        {
+                            // Second pair are same rank
+                            if (this.RankGroups[1].Key == other.RankGroups[1].Key)
+                            {
+                                skip = 4;
+                                break;
+                            }
+
+                            skip = 2;
+                            break;                               
+                        }
+                        break;
+                    }
+                    case HandClassification.ThreeOfAKind:
+                    {
+                        take = 3;
+                        break;
+                    }
+                    case HandClassification.Straight:
+                    {
+                        take = 1;
+                        break;
+                    }
+                    case HandClassification.Flush:
+                    {
+                        take = 5;
+                        break;
+                    }
+                    case HandClassification.FullHouse:
+                    {
+                        take = 3;
+                        break;
+                    }
+                    case HandClassification.FourOfAKind:
+                    {
+                        take = 4;
+                        break;
+                    }
+                    case HandClassification.StraightFlush:
+                    {
+                        take = 5;
+                        break;
+                    }
+                    case HandClassification.RoyalFlush:
+                    {
+                        return Result.Tie;
+                    }
+                }
+
+                var thisSum = this.Hand.Skip(skip).Take(take).Sum(card => (int)card.Rank);
+                var otherSum = other.Hand.Skip(skip).Take(take).Sum(card => (int)card.Rank);
+                return Decide(thisSum.CompareTo(otherSum));
             }
-            else
+
+            return Decide(this.Classification.CompareTo(other.Classification));
+        }
+
+        private static Result CompareSideCards(List<Rank> thisSideCards, List<Rank> otherSideCards)
+        {
+            for (int index = 0; index < thisSideCards.Count; index++)
             {
-                compared = this.Classification.CompareTo(other.Classification);
+                if (thisSideCards[index] != otherSideCards[index])
+                {
+                    return Decide(thisSideCards[index].CompareTo(otherSideCards[index]));
+                }
             }
 
-            if (compared < 0)
+            return Result.Tie;
+        }
+
+        private static Result Decide(int comparedRank)
+        {
+            if (comparedRank < 0)
             {
                 return Result.Loss;
             }
-            return compared == 0 ? Result.Tie : Result.Win;
+
+            return comparedRank == 0 ? Result.Tie : Result.Win;
         }
     }
 }
