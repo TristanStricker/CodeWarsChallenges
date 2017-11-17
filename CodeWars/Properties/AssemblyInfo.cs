@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("PokerHand.Tests")]
+[assembly: AssemblyTitle("CodeWars")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("PokerHand.Tests")]
+[assembly: AssemblyProduct("CodeWars")]
 [assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("4f640cb5-b459-4f08-bd33-89aca45fb874")]
+[assembly: Guid("30cf3f5b-4c72-45d6-bd99-cfc35d5c7eed")]
 
 // Version information for an assembly consists of the following four values:
 //

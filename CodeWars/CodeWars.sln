@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.16
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeWars", "CodeWars.csproj", "{30CF3F5B-4C72-45D6-BD99-CFC35D5C7EED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreWars.Tests", "..\CoreWars.Tests\CoreWars.Tests.csproj", "{ACCE5169-0760-4D1E-BE98-D7BBAE80AB9B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeWars.Console", "CodeWars.Console\CodeWars.Console.csproj", "{ED36DCD3-F561-4169-A5C4-975FB4DB335B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{30CF3F5B-4C72-45D6-BD99-CFC35D5C7EED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30CF3F5B-4C72-45D6-BD99-CFC35D5C7EED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30CF3F5B-4C72-45D6-BD99-CFC35D5C7EED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30CF3F5B-4C72-45D6-BD99-CFC35D5C7EED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ACCE5169-0760-4D1E-BE98-D7BBAE80AB9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACCE5169-0760-4D1E-BE98-D7BBAE80AB9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACCE5169-0760-4D1E-BE98-D7BBAE80AB9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACCE5169-0760-4D1E-BE98-D7BBAE80AB9B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED36DCD3-F561-4169-A5C4-975FB4DB335B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED36DCD3-F561-4169-A5C4-975FB4DB335B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED36DCD3-F561-4169-A5C4-975FB4DB335B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED36DCD3-F561-4169-A5C4-975FB4DB335B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
